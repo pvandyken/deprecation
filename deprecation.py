@@ -104,7 +104,7 @@ class UnsupportedWarning(DeprecatedWarning):
 
 
 def deprecated(deprecated_in=None, removed_in=None, current_version=None,
-               details=""):
+               details="", admonition=None):
     """Decorate a function to signify its deprecation
 
     This function wraps a method that will soon be removed and does two things:
@@ -207,6 +207,9 @@ def deprecated(deprecated_in=None, removed_in=None, current_version=None,
 
             deprecation_note = (".. deprecated::{deprecated_in}"
                                 "{removed_in}{details}".format(**parts))
+
+            if admonition:
+                deprecation_note = ".. %s::\n%s" % (admonition, textwrap.indent(deprecation_note, '    '))
 
             # default location for insertion of deprecation note
             loc = 1
