@@ -14,14 +14,7 @@ import functools
 import textwrap
 import warnings
 
-from packaging import version
 from datetime import date
-
-__version__ = "2.1.0"
-
-# This is mostly here so automodule docs are ordered more ideally.
-__all__ = ["deprecated", "message_location", "fail_if_not_removed",
-           "DeprecatedWarning", "UnsupportedWarning"]
 
 #: Location where the details are added to a deprecated docstring
 #:
@@ -41,13 +34,12 @@ class DeprecatedWarning(DeprecationWarning):
     raised and passed through the system as only the class--not the
     instance--and message are what gets preserved.
 
-    :param function: The function being deprecated.
-    :param deprecated_in: The version that ``function`` is deprecated in
-    :param removed_in: The version or :class:`datetime.date` specifying
-                       when ``function`` gets removed.
-    :param details: Optional details about the deprecation. Most often
-                    this will include directions on what to use instead
-                    of the now deprecated code.
+    Args
+        function: The function being deprecated. deprecated_in: The version that
+            ``function`` is deprecated in removed_in: The version or
+            :class:`datetime.date` specifying when ``function`` gets removed.
+        details: Optional details about the deprecation. Most often this will include
+            directions on what to use instead of the now deprecated code.
     """
 
     def __init__(self, function, deprecated_in, removed_in, details=""):
@@ -117,33 +109,25 @@ def deprecated(deprecated_in=None, removed_in=None, current_version=None,
           to be informed of said warnings they will need to enable them--see
           the :mod:`warnings` module documentation for more details.
 
-    :param deprecated_in: The version at which the decorated method is
-                          considered deprecated. This will usually be the
-                          next version to be released when the decorator is
-                          added. The default is **None**, which effectively
-                          means immediate deprecation. If this is not
-                          specified, then the `removed_in` and
-                          `current_version` arguments are ignored.
-    :param removed_in: The version or :class:`datetime.date` when the decorated
-                       method will be removed. The default is **None**,
-                       specifying that the function is not currently planned
-                       to be removed.
-                       Note: This parameter cannot be set to a value if
-                       `deprecated_in=None`.
-    :param current_version: The source of version information for the
-                            currently running code. This will usually be
-                            a `__version__` attribute on your library.
-                            The default is `None`.
-                            When `current_version=None` the automation to
-                            determine if the wrapped function is actually
-                            in a period of deprecation or time for removal
-                            does not work, causing a
-                            :class:`~deprecation.DeprecatedWarning`
-                            to be raised in all cases.
-    :param details: Extra details to be added to the method docstring and
-                    warning. For example, the details may point users to
-                    a replacement method, such as "Use the foo_bar
-                    method instead". By default there are no details.
+    Args:
+        deprecated_in: The version at which the decorated method is considered
+            deprecated. This will usually be the next version to be released when the
+            decorator is added. The default is **None**, which effectively means
+            immediate deprecation. If this is not specified, then the `removed_in` and
+            `current_version` arguments are ignored.
+        removed_in: The version or :class:`datetime.date` when the decorated method will
+            be removed. The default is **None**, specifying that the function is not
+            currently planned to be removed. Note: This parameter cannot be set to a
+            value if `deprecated_in=None`.
+        current_version: The source of version information for the currently running
+            code. This will usually be a `__version__` attribute on your library. The
+            default is `None`. When `current_version=None` the automation to determine
+            if the wrapped function is actually in a period of deprecation or time for
+            removal does not work, causing a :class:`~deprecation.DeprecatedWarning` to
+            be raised in all cases.
+        details: Extra details to be added to the method docstring and warning. For
+            example, the details may point users to a replacement method, such as "Use
+            the foo_bar method instead". By default there are no details.
     """
     # You can't just jump to removal. It's weird, unfair, and also makes
     # building up the docstring weird.
@@ -269,9 +253,9 @@ def fail_if_not_removed(method):
     warnings that occur during testing and causes unittests to fail,
     making it easier to keep track of when code should be removed.
 
-    :raises: :class:`AssertionError` if an
-             :class:`~deprecation.UnsupportedWarning`
-             is raised while running the test method.
+    Raises:
+
+        is raised while running the test method.
     """
     # NOTE(briancurtin): Unless this is named test_inner, nose won't work
     # properly. See Issue #32.
