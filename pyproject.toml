@@ -20,6 +20,7 @@ bump = true
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.12"
+packaging = "^23.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.1.0"
