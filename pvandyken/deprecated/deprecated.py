@@ -30,7 +30,7 @@ _T = TypeVar("_T")
 #: When set to ``"top"``, the details are inserted between the
 #: summary line and docstring contents.
 
-MessageLocations: TypeAlias = Literal["bottom"] | Literal["top"]
+MessageLocations: TypeAlias = "Literal['bottom'] | Literal['top']"
 
 
 class Config(TypedDict):
