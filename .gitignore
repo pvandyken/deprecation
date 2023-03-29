@@ -91,3 +91,5 @@ ENV/
 
 #Pycharm Files
 .idea/
+
+.vscode

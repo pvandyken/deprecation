@@ -11,9 +11,10 @@
 # under the License.
 from __future__ import annotations
 import collections
+from enum import Enum
 import functools
 import textwrap
-from typing import Callable, TypeVar
+from typing import Callable, Literal, TypeAlias, TypeVar, TypedDict
 from typing_extensions import ParamSpec
 import warnings
 from packaging import version
@@ -29,7 +30,21 @@ _T = TypeVar("_T")
 #: When set to ``"bottom"``, the details are appended to the end.
 #: When set to ``"top"``, the details are inserted between the
 #: summary line and docstring contents.
-message_location = "bottom"
+
+MessageLocations: TypeAlias = Literal["bottom"] | Literal["top"]
+
+
+class Config(TypedDict):
+    message_location: MessageLocations
+
+
+config = Config(message_location="bottom")
+
+
+def set_config(message_location: MessageLocations | None = None):
+    global config
+    if message_location:
+        config["message_location"] = message_location
 
 
 class DeprecatedWarning(DeprecationWarning):
@@ -196,13 +211,13 @@ def deprecated(
             # If removed_in is a date, use "removed on"
             # If removed_in is a version, use "removed in"
             parts = {
-                "deprecated_in": f" {deprecated_in or ''}",
+                "deprecated_in": f" {deprecated_in}" if deprecated_in else "",
                 "removed_in": "\n   This will be removed {} {}.".format(
                     "on" if isinstance(removed_in, date) else "in", removed_in
                 )
                 if removed_in
                 else "",
-                "details": f" {details or ''}",
+                "details": f" {details}" if details else "",
             }
 
             deprecation_note = (
@@ -241,7 +256,7 @@ def deprecated(
 
                 # change the message_location if we add to end of docstring
                 # do this always if not "top"
-                if message_location != "top":
+                if config["message_location"] != "top":
                     loc = 3
 
             # insert deprecation note and dual newline
@@ -280,10 +295,8 @@ def fail_if_not_removed(method):
         is raised while running the test method.
     """
 
-    # NOTE(briancurtin): Unless this is named test_inner, nose won't work
-    # properly. See Issue #32.
     @functools.wraps(method)
-    def test_inner(*args, **kwargs):
+    def inner(*args, **kwargs):
         with warnings.catch_warnings(record=True) as caught_warnings:
             warnings.simplefilter("always")
             rv = method(*args, **kwargs)
@@ -298,4 +311,4 @@ def fail_if_not_removed(method):
                 )
         return rv
 
-    return test_inner
+    return inner

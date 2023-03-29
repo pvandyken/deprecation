@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "pvandyken.deprecated"
+name = "pvandyken-deprecated"
 version = "0.0.0"
 description = "Wrapper to manage deprecations"
 authors = ["Peter Van Dyken <pvandyk2@uwo.ca>"]
 license = "Apache-2.0"
 readme = "README.md"
-packages = [{include = "deprecated"}]
+packages = [{include = "pvandyken"}]
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
@@ -20,7 +20,8 @@ bump = true
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.12"
-packaging = "^23.0"
+typing-extensions = ">=3.10.0"
+packaging = ">=22.0,<24.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.1.0"
