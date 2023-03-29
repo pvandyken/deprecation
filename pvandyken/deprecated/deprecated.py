@@ -10,17 +10,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from __future__ import annotations
+
 import collections
-from enum import Enum
 import functools
 import textwrap
-from typing import Callable, Literal, TypeAlias, TypeVar, TypedDict
-from typing_extensions import ParamSpec
 import warnings
-from packaging import version
-
 from datetime import date
+from typing import Callable, Literal, TypeAlias, TypedDict, TypeVar
 
+from packaging import version
+from typing_extensions import ParamSpec
 
 _P = ParamSpec("_P")
 _T = TypeVar("_T")
