@@ -16,10 +16,10 @@ import functools
 import textwrap
 import warnings
 from datetime import date
-from typing import Callable, Literal, TypeAlias, TypedDict, TypeVar
+from typing import Callable
 
 from packaging import version
-from typing_extensions import ParamSpec
+from typing_extensions import ParamSpec, TypeVar, TypeAlias, TypedDict, Literal
 
 _P = ParamSpec("_P")
 _T = TypeVar("_T")
