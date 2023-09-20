@@ -19,13 +19,7 @@ from datetime import date
 from typing import Callable
 
 from packaging import version
-from typing_extensions import (
-    ParamSpec,
-    TypeVar,
-    TypeAlias,
-    TypedDict,
-    Literal,
-)
+from typing_extensions import Literal, ParamSpec, TypeAlias, TypedDict, TypeVar
 
 _P = ParamSpec("_P")
 _T = TypeVar("_T")
@@ -123,7 +117,7 @@ class UnsupportedWarning(DeprecatedWarning):
     def __str__(self):
         parts: dict[str, str | date] = collections.defaultdict(str)
         parts["function"] = self.function
-        parts["removed"] = self.removed_in or ''
+        parts["removed"] = self.removed_in or ""
 
         if self.details:
             parts["details"] = " %s" % self.details

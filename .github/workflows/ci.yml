@@ -55,10 +55,10 @@ jobs:
       #----------------------------------------------
       - name: Black
         run: poetry run black . --check
-      - name: Flake8
-        run: poetry run flake8
       - name: isort
         run: poetry run isort . -c
+      - name: ruff
+        run: poetry run ruff pvandyken
 
 
   test:

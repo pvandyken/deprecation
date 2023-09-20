@@ -10,15 +10,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import warnings
+
 # As we unfortunately support Python 2.7, it lacks TestCase.subTest which
 # is in 3.4+ or in unittest2
 from ast import Assert
-import pytest
-import warnings
-
-from pvandyken import deprecated
 from datetime import date
 
+import pytest
+
+from pvandyken import deprecated
 from pvandyken.deprecated.deprecated import UnsupportedWarning
 
 

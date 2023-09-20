@@ -24,20 +24,17 @@ typing-extensions = ">=3.10.0"
 packaging = ">=22.0"
 
 [tool.poetry.group.dev.dependencies]
+ruff = "^0.0.290"
 black = "^23.1.0"
 pytest = "^7.0.0"
-pylint = "^2.12.0"
 isort = "^5.10.1"
-# flake8==6.0.0 requires py38 or greater
-flake8 = "^5.0.4"
-poethepoet = "^0.18.1"
-# pre-commit==3.0.0 requires py38 or greater
-pre-commit = "^2.17.0"
+poethepoet = "^0.22.1"
+pre-commit = "^3.0.0"
 mkinit = "^1.0.0"
 
 [tool.poe.tasks]
 setup = "pre-commit install"
-quality = { shell = "isort snakebids && black snakebids && flake8 snakebids && pylint snakebids" }
+quality = { shell = "isort pvandyken && black pvandyken && ruff pvandyken" }
 test = "pytest --doctest-modules --ignore=docs --ignore=snakebids/project_template --benchmark-disable"
 mkinit = "mkinit --recursive --nomods --black -i snakebids"
 benchmark = "pytest --benchmark-only --benchmark-autosave"
