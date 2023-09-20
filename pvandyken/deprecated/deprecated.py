@@ -13,10 +13,10 @@ from __future__ import annotations
 
 import collections
 import functools
-from string import Formatter
 import textwrap
 import warnings
 from datetime import date
+from string import Formatter
 from typing import Callable
 
 from packaging import version
