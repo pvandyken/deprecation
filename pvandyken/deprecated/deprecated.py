@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import collections
 import functools
+from string import Formatter
 import textwrap
 import warnings
 from datetime import date
@@ -99,9 +100,11 @@ class DeprecatedWarning(DeprecationWarning):
         if self.details:
             parts["details"] = f" {self.details}"
 
-        return (
-            "{function} is deprecated{deprecated}{removed}{period}{details}"
-        ).format(**parts)
+        return Formatter().vformat(
+            "{function} is deprecated{deprecated}{removed}{period}{details}",
+            (),
+            parts,
+        )
 
 
 class UnsupportedWarning(DeprecatedWarning):
@@ -122,15 +125,17 @@ class UnsupportedWarning(DeprecatedWarning):
         if self.details:
             parts["details"] = " %s" % self.details
 
-        return "{function} is unsupported as of {removed}.{details}".format(**parts)
+        return Formatter().vformat(
+            "{function} is unsupported as of {removed}.{details}", (), parts
+        )
 
 
 def deprecated(
-    details: str,
     deprecated_in: str | None = None,
     removed_in: str | date | None = None,
     current_version: str | None = None,
     admonition: str | None = None,
+    details: str = "",
 ):
     """Decorate a function to signify its deprecation
 
@@ -221,7 +226,7 @@ def deprecated(
                 )
                 if removed_in
                 else "",
-                "details": f" {details}",
+                "details": f" {details}" if details else "",
             }
 
             deprecation_note = (
