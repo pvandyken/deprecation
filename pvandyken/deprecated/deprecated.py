@@ -19,7 +19,13 @@ from datetime import date
 from typing import Callable
 
 from packaging import version
-from typing_extensions import ParamSpec, TypeVar, TypeAlias, TypedDict, Literal
+from typing_extensions import (
+    ParamSpec,
+    TypeVar,
+    TypeAlias,
+    TypedDict,
+    Literal,
+)
 
 _P = ParamSpec("_P")
 _T = TypeVar("_T")
@@ -64,7 +70,13 @@ class DeprecatedWarning(DeprecationWarning):
             directions on what to use instead of the now deprecated code.
     """
 
-    def __init__(self, function, deprecated_in, removed_in, details=""):
+    def __init__(
+        self,
+        function: str,
+        deprecated_in: str | None,
+        removed_in: str | date | None,
+        details: str = "",
+    ):
         # NOTE: The docstring only works for this class if it appears up
         # near the class name, not here inside __init__. I think it has
         # to do with being an exception class.
@@ -79,11 +91,11 @@ class DeprecatedWarning(DeprecationWarning):
     def __str__(self):
         # Use a defaultdict to give us the empty string
         # when a part isn't included.
-        parts = collections.defaultdict(str)
+        parts: dict[str, str] = collections.defaultdict(str)
         parts["function"] = self.function
 
         if self.deprecated_in:
-            parts["deprecated"] = " as of %s" % self.deprecated_in
+            parts["deprecated"] = f" as of {self.deprecated_in}"
         if self.removed_in:
             parts["removed"] = " and will be removed {} {}".format(
                 "on" if isinstance(self.removed_in, date) else "in", self.removed_in
@@ -91,12 +103,11 @@ class DeprecatedWarning(DeprecationWarning):
         if any([self.deprecated_in, self.removed_in, self.details]):
             parts["period"] = "."
         if self.details:
-            parts["details"] = " %s" % self.details
+            parts["details"] = f" {self.details}"
 
         return (
-            "%(function)s is deprecated%(deprecated)s%(removed)s"
-            "%(period)s%(details)s" % (parts)
-        )
+            "{function} is deprecated{deprecated}{removed}{period}{details}"
+        ).format(**parts)
 
 
 class UnsupportedWarning(DeprecatedWarning):
@@ -110,21 +121,21 @@ class UnsupportedWarning(DeprecatedWarning):
     """
 
     def __str__(self):
-        parts = collections.defaultdict(str)
+        parts: dict[str, str | date] = collections.defaultdict(str)
         parts["function"] = self.function
-        parts["removed"] = self.removed_in
+        parts["removed"] = self.removed_in or ''
 
         if self.details:
             parts["details"] = " %s" % self.details
 
-        return "%(function)s is unsupported as of %(removed)s." "%(details)s" % (parts)
+        return "{function} is unsupported as of {removed}.{details}".format(**parts)
 
 
 def deprecated(
+    details: str,
     deprecated_in: str | None = None,
     removed_in: str | date | None = None,
     current_version: str | None = None,
-    details: str = "",
     admonition: str | None = None,
 ):
     """Decorate a function to signify its deprecation
@@ -140,6 +151,9 @@ def deprecated(
           the :mod:`warnings` module documentation for more details.
 
     Args:
+        details: Extra details to be added to the method docstring and warning. For
+            example, the details may point users to a replacement method, such as "Use
+            the foo_bar method instead". By default there are no details.
         deprecated_in: The version at which the decorated method is considered
             deprecated. This will usually be the next version to be released when the
             decorator is added. The default is **None**, which effectively means
@@ -155,9 +169,6 @@ def deprecated(
             if the wrapped function is actually in a period of deprecation or time for
             removal does not work, causing a :class:`~deprecation.DeprecatedWarning` to
             be raised in all cases.
-        details: Extra details to be added to the method docstring and warning. For
-            example, the details may point users to a replacement method, such as "Use
-            the foo_bar method instead". By default there are no details.
     """
     # You can't just jump to removal. It's weird, unfair, and also makes
     # building up the docstring weird.
@@ -216,7 +227,7 @@ def deprecated(
                 )
                 if removed_in
                 else "",
-                "details": f" {details}" if details else "",
+                "details": f" {details}",
             }
 
             deprecation_note = (
@@ -282,7 +293,7 @@ def deprecated(
     return _function_wrapper
 
 
-def fail_if_not_removed(method):
+def fail_if_not_removed(method: Callable[_P, _T]) -> Callable[_P, _T]:
     """Decorate a test method to track removal of deprecated code
 
     This decorator catches :class:`~deprecation.UnsupportedWarning`
@@ -295,7 +306,7 @@ def fail_if_not_removed(method):
     """
 
     @functools.wraps(method)
-    def inner(*args, **kwargs):
+    def inner(*args: _P.args, **kwargs: _P.kwargs):
         with warnings.catch_warnings(record=True) as caught_warnings:
             warnings.simplefilter("always")
             rv = method(*args, **kwargs)
